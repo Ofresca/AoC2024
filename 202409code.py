@@ -1,3 +1,4 @@
+import re
 import time
 
 # ANS = [6259790630969, 6289564433984]
@@ -34,11 +35,24 @@ for idx, numb in enumerate(D):
             disk_map.append('.')
 
 # Move files from the back of the string to the front. 
+""" 
 while '.' in disk_map:
     idx = disk_map.index('.')
     move_file = disk_map.pop()
     if move_file != '.':
         disk_map[idx] = move_file
+
+ """
+for match in [i for i,x in enumerate(disk_map) if x == '.']:
+    move_file = disk_map.pop()
+    while move_file == '.':
+        move_file = disk_map.pop()
+    if match >= len(disk_map):
+        disk_map.append(move_file)
+        break
+    disk_map[match] = move_file
+
+# print(disk_map)
 
 p1 = sum(file*idx for idx, file in enumerate(list(disk_map)))
 
@@ -54,10 +68,12 @@ for idx, numb in enumerate(D):
     else:
         empties.append(numb)
 
+# Create a copy so OG list can be used for iteration
 n_files = files.copy()
 
 # Move files from the back of the list to the front. 
 for (file, loc) in reversed(files):
+    # Find location of the file to be moved. 
     old_index = n_files.index((file,loc))
     for jdx, space in enumerate(empties[:old_index]):
         if 0 < file <= space:
